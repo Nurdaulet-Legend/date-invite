@@ -1,88 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <title>Приглашение ❤️</title>
-
 <style>
+  /* Фон и общие стили */
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top left, #ff9a9e, #fad0c4, #fbc2eb);
+    overflow: hidden;
+    position: relative;
+  }
 
-body{
-font-family:Arial;
-text-align:center;
-background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-}
+  /* Сердечки анимация */
+  .heart {
+    position: absolute;
+    font-size: 2rem;
+    color: #ff2e88;
+    animation: floatUp 6s linear infinite;
+    pointer-events: none;
+    opacity: 0.8;
+  }
 
-h1{
-color:white;
-font-size:32px;
-}
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity:0.8; }
+    50% { opacity:1; }
+    100% { transform: translateY(-100vh) scale(1.5); opacity:0; }
+  }
 
-button{
-font-size:20px;
-padding:15px 25px;
-margin:10px;
-border:none;
-border-radius:12px;
-cursor:pointer;
-}
+  h1 {
+    color: white;
+    font-size: 3rem;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+    margin-bottom: 40px;
+    text-align: center;
+  }
 
-#yes{
-background:#ff2e88;
-color:white;
-}
+  button {
+    font-size: 1.5rem;
+    padding: 18px 35px;
+    margin: 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
 
-#no{
-background:white;
-}
+  #yes {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: white;
+  }
+  #yes:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+  }
 
+  #no {
+    background: white;
+    color: #ff2e88;
+    transition: left 0.3s, top 0.3s;
+    position: relative;
+  }
 </style>
-
 </head>
-
 <body>
 
 <h1>Пойдёшь со мной на свидание? ❤️</h1>
-
 <button id="yes">Приду ❤️</button>
 <button id="no">Не могу</button>
 
 <script>
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxkeg_mCDs8ShvlL1X1GE_TN4G4ns_BFQiEjp2YDQ50B9-okLNUj7WbFrb-2evJ1g/exec"; // сюда вставь URL Apps Script
 
+// анимация плавающих сердечек
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.className = 'heart';
+  heart.style.left = Math.random() * window.innerWidth + 'px';
+  heart.style.fontSize = 16 + Math.random()*32 + 'px';
+  heart.innerText = '❤️';
+  document.body.appendChild(heart);
+  setTimeout(()=>{ heart.remove(); },6000);
+}
+setInterval(createHeart, 500);
+
+// кнопка "Не могу" убегает
 const noBtn = document.getElementById("no");
-
-function moveButton(){
-
-let x = Math.random() * (window.innerWidth - 100);
-let y = Math.random() * (window.innerHeight - 50);
-
-noBtn.style.position = "absolute";
-noBtn.style.left = x + "px";
-noBtn.style.top = y + "px";
-
+function moveButton() {
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 60);
+  noBtn.style.position = "absolute";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 }
 
-noBtn.addEventListener("click", moveButton);
-noBtn.addEventListener("touchstart", moveButton);
-
-document.getElementById("yes").onclick = function(){
-
-// отправка сигнала через скрытую форму
-fetch("https://docs.google.com/forms/d/e/1FAIpQLSfplnJXzyMQEHZU2lu4IdXGoqwcGWQOiNT1FdzIUh2710vF9g/formResponse",{
-method:"POST",
-mode:"no-cors",
-body:new FormData()
+noBtn.addEventListener("click", function(){
+  fetch(WEBHOOK_URL, { method:"POST", body: new URLSearchParams({button:"Не могу"}) });
+  moveButton();
+});
+noBtn.addEventListener("touchstart", function(){
+  fetch(WEBHOOK_URL, { method:"POST", body: new URLSearchParams({button:"Не могу"}) });
+  moveButton();
 });
 
-// переход на страницу с адресом
-window.location.href="address.html";
-
+// кнопка "Приду ❤️"
+document.getElementById("yes").onclick = function(){
+  fetch(WEBHOOK_URL, { method:"POST", body: new URLSearchParams({button:"Приду ❤️"}) });
+  window.location.href = "address.html";
 }
-
 </script>
 
 </body>
