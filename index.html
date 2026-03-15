@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Вопрос ❤️</title>
+<title>Приглашение ❤️</title>
 
 <style>
 
@@ -15,23 +15,20 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-overflow:hidden;
 }
 
 h1{
-font-size:38px;
 color:white;
-margin-bottom:40px;
+font-size:32px;
 }
 
 button{
 font-size:20px;
-padding:15px 30px;
+padding:15px 25px;
 margin:10px;
 border:none;
 border-radius:12px;
 cursor:pointer;
-transition:0.2s;
 }
 
 #yes{
@@ -43,47 +40,46 @@ color:white;
 background:white;
 }
 
-#message{
-margin-top:30px;
-font-size:26px;
-color:white;
-display:none;
-}
-
 </style>
 
 </head>
 
 <body>
 
-<h1>Пойдешь со мной на свидание? ❤️</h1>
+<h1>Пойдёшь со мной на свидание? ❤️</h1>
 
 <button id="yes">Приду ❤️</button>
 <button id="no">Не могу</button>
 
-<div id="message">
-Я знал что ты скажешь да 😄  
-Напиши мне ❤️
-</div>
-
 <script>
 
-const noButton = document.getElementById("no");
+const noBtn = document.getElementById("no");
 
-noButton.addEventListener("mouseover",function(){
+function moveButton(){
 
-const x = Math.random()*window.innerWidth;
-const y = Math.random()*window.innerHeight;
+let x = Math.random() * (window.innerWidth - 100);
+let y = Math.random() * (window.innerHeight - 50);
 
-noButton.style.position="absolute";
-noButton.style.left=x+"px";
-noButton.style.top=y+"px";
+noBtn.style.position = "absolute";
+noBtn.style.left = x + "px";
+noBtn.style.top = y + "px";
 
+}
+
+noBtn.addEventListener("click", moveButton);
+noBtn.addEventListener("touchstart", moveButton);
+
+document.getElementById("yes").onclick = function(){
+
+// отправка сигнала через скрытую форму
+fetch("https://docs.google.com/forms/d/e/ВАША_FORM_ID/formResponse",{
+method:"POST",
+mode:"no-cors",
+body:new FormData()
 });
 
-document.getElementById("yes").onclick=function(){
-
-document.getElementById("message").style.display="block";
+// переход на страницу с адресом
+window.location.href="address.html";
 
 }
 
